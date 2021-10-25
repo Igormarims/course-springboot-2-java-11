@@ -9,8 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -38,7 +40,8 @@ public class Category  implements Serializable{
 	
 	@Getter(value = AccessLevel.NONE)
 	@Setter(value = AccessLevel.NONE)
-	@Transient
+	@ManyToMany(mappedBy = "categories" )
+	@JsonIgnore
 	private Set<Product> products = new HashSet<>();
 
 	public Category(Long id, String name) {
