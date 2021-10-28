@@ -13,7 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 
@@ -30,14 +33,18 @@ public class Product implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	String name;
+   private String name;
 	
-	String description;
+	private String description;
 	
-	Double price;
+	private Double price;
 	
-	String imgUrl;
+	private String imgUrl;
 	
+	@OneToMany(mappedBy = "id.product")
+	private Set<OrderItem> items = new HashSet<>();
+	
+
 	@ManyToMany
 	@JoinTable(name= "tb_product_category", joinColumns = @JoinColumn (name = "product_id"),
 	inverseJoinColumns = @JoinColumn(name = "category_id"))
@@ -100,7 +107,15 @@ public class Product implements Serializable{
 		return categories;
 	}
 
-	
+	@JsonIgnore
+	public Set<Order> getOrders() {
+		Set<Order> set = new HashSet<>();
+		for (OrderItem x : items) {
+			set.add(x.getOrder());
+			}
+		return set;
+	}
+
 	
 	@Override
 	public int hashCode() {
@@ -119,6 +134,7 @@ public class Product implements Serializable{
 		return id == other.id;
 	}
 
+	
 	
 	
 	
